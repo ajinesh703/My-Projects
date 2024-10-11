@@ -1,0 +1,72 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: black;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+h1 {
+  margin: 0;
+  padding: 10px;
+}
+
+.filter-options, .sentiment-options {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.filter-options button, .sentiment-options button {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  margin: 0 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.filter-options button:hover, .sentiment-options button:hover {
+  background-color: #555;
+}
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+}
+
+.news-article {
+  background-color: white;
+  margin: 10px;
+  padding: 15px;
+  width: 300px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.news-article h3 {
+  font-size: 18px;
+}
+
+.news-article p {
+  font-size: 14px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #4CAF50;
+  color: white;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
