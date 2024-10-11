@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered News Aggregator</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+  <header>
+    <h1>AI-Powered News Aggregator</h1>
+    <div class="filter-options">
+      <button id="all-news">All News</button>
+      <button id="sports-news">Sports</button>
+      <button id="science-news">Science</button>
+      <button id="finance-news">Finance</button>
+      <button id="politics-news">Politics</button>
+      <button id="geopolitics-news">Geopolitics</button>
+      <button id="stokes-news">Stokes</button>
+      <button id="jobs-news">Jobs</button>
+      <button id="cricket-news">Cricket</button>
+    </div>
+    <div class="sentiment-options">
+      <button id="positive-news">Positive</button>
+      <button id="neutral-news">Neutral</button>
+      <button id="negative-news">Negative</button>
+    </div>
+  </header>
+
+  <main id="news-container">
+    <!-- News will be inserted here -->
+  </main>
+
+  <footer>
+    <p>Powered by News API and TensorFlow.js Sentiment Analysis</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity"></script>
+  <script src="script.js"></script>
+</body>
+</html>
