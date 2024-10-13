@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+    margin: 0;
+    padding: 0;
+    color: white; /* Ensures text color contrasts against the gradient */
+    font-weight: bold;
+    height: 100vh; /* Ensure the background covers the entire viewport */
+}
+
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.crypto-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.crypto-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    color: black; /* Ensure text inside the boxes remains readable */
+}
+
+h1 {
+    color: white; /* Make the h1 stand out on the gradient background */
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #555;
+}
+
+p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: #333;
+}
