@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #333;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .stopwatch {
+            text-align: center;
+        }
+        .time-display {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .save {
+            background-color: #666;
+            color: #fff;
+        }
+        .round {
+            background-color: #0096FF;
+            color: #fff;
+        }
+        .stop {
+            background-color: #FFD700;
+            color: #333;
+        }
+        .rounds-list {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 400px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch">
+        <div class="time-display" id="time">00:00:00</div>
+        <div class="buttons">
+            <button class="save" id="save" disabled>Save</button>
+            <button class="round" id="round">Round</button>
+            <button class="stop" id="stop">Stop</button>
+        </div>
+        <div class="rounds-list" id="rounds"></div>
+    </div>
+
+    <script>
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+        let roundCount = 0;
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+
+        function startTimer() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                document.getElementById('time').textContent = formatTime(elapsedTime);
+            }, 1000);
+            document.getElementById('save').disabled = false;
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        document.getElementById('round').addEventListener('click', () => {
+            roundCount++;
+            const roundTime = formatTime(elapsedTime);
+            const roundElement = document.createElement('p');
+            roundElement.textContent = `Round ${roundCount}: ${roundTime}`;
+            document.getElementById('rounds').appendChild(roundElement);
+        });
+
+        document.getElementById('stop').addEventListener('click', () => {
+            stopTimer();
+        });
+
+        startTimer(); // Automatically starts the timer when the page loads.
+    </script>
+</body>
+</html>
