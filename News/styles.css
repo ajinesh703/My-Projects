@@ -1,0 +1,90 @@
+body {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+#searchInput {
+  padding: 10px;
+  font-size: 16px;
+  flex: 1;
+}
+
+#categorySelect {
+  padding: 10px;
+  font-size: 16px;
+  margin-left: 10px;
+  flex: 1;
+}
+
+#loadMoreBtn {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+  flex: 0.5;
+}
+
+#loadMoreBtn:hover {
+  background-color: #0056b3;
+}
+
+.news-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.news-article {
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.news-article img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.news-article h3 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.news-article p {
+  font-size: 16px;
+  color: #555;
+}
+
+.news-article a {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  color: #007BFF;
+}
+
+.news-article a:hover {
+  text-decoration: underline;
+}
