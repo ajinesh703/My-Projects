@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiBot</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background-color: #0d1b2a;
+            color: #ffffff;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 100vh;
+            border: 1px solid #1b263b;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            background-color: #1b263b;
+        }
+        .chat-header {
+            background: linear-gradient(90deg, #1e3a5f, #27476e);
+            padding: 16px;
+            color: #fff;
+            text-align: center;
+            font-size: 1.5rem;
+            position: relative;
+        }
+        .chat-header img {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            border-radius: 50%;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.user {
+            align-items: flex-end;
+        }
+        .message.bot {
+            align-items: flex-start;
+            position: relative;
+        }
+        .message .bubble {
+            max-width: 70%;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .message.user .bubble {
+            background-color: #3a506b;
+            color: #fff;
+        }
+        .message.bot .bubble {
+            background-color: #162842;
+            color: #cbd4db;
+            border: 1px solid #1b263b;
+            position: relative;
+            padding-left: 60px;
+        }
+        .message.bot .bubble img {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .chat-input {
+            display: flex;
+            padding: 16px;
+            border-top: 1px solid #1b263b;
+            background-color: #1e3a5f;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #162842;
+            border-radius: 8px;
+            margin-right: 8px;
+            background-color: #0d1b2a;
+            color: #fff;
+        }
+        .chat-input button {
+            background-color: #27476e;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .chat-input button:hover {
+            background-color: #3a506b;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="chatbot.png" alt="Chatbot Logo">
+            WikiBot 
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask me anything...">
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById("chatMessages");
+        const userInput = document.getElementById("userInput");
+        const sendButton = document.getElementById("sendButton");
+
+        const botImage = "chatbot.png";
+
+        const friendlyResponses = {
+            hi: "Hello! How can I assist you today?",
+            hello: "Hi there! What would you like to know?",
+            hey: "Hey! How can I help you?",
+            thanks: "You're welcome! Feel free to ask anything else.",
+            bye: "Goodbye! Have a great day!"
+        };
+
+        async function getBotResponse(message) {
+            const lowerCaseMessage = message.toLowerCase();
+            if (friendlyResponses[lowerCaseMessage]) {
+                return friendlyResponses[lowerCaseMessage];
+            }
+
+            try {
+                const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(message)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.extract) {
+                        return data.extract;
+                    } else {
+                        return "Sorry, I couldn't find any information about that topic on Wikipedia.";
+                    }
+                } else {
+                    return "Sorry, there was an error fetching the data. Please try again.";
+                }
+            } catch (error) {
+                console.error("Error fetching bot response:", error);
+                return "I'm sorry, I couldn't fetch a response. Please try again later.";
+            }
+        }
+
+        function addMessage(content, sender = "bot") {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${sender}`;
+            const bubbleDiv = document.createElement("div");
+            bubbleDiv.className = "bubble";
+
+            if (sender === "bot") {
+                const img = document.createElement("img");
+                img.src = botImage;
+                bubbleDiv.appendChild(img);
+            }
+
+            const textNode = document.createTextNode(content);
+            bubbleDiv.appendChild(textNode);
+            messageDiv.appendChild(bubbleDiv);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        sendButton.addEventListener("click", async () => {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            addMessage(userMessage, "user");
+            userInput.value = "";
+
+            const botReply = await getBotResponse(userMessage);
+            addMessage(botReply, "bot");
+        });
+
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
