@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Solar System</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="solarSystem"></canvas>
+
+  <script>
+    const canvas = document.getElementById("solarSystem");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const planets = [
+      { name: "Mercury", color: "gray", radius: 5, orbitRadius: 50, speed: 0.02, url: "https://en.wikipedia.org/wiki/Mercury_(planet)" },
+      { name: "Venus", color: "yellow", radius: 8, orbitRadius: 100, speed: 0.015, url: "https://en.wikipedia.org/wiki/Venus" },
+      { name: "Earth", color: "blue", radius: 9, orbitRadius: 150, speed: 0.01, url: "https://en.wikipedia.org/wiki/Earth" },
+      { name: "Mars", color: "red", radius: 7, orbitRadius: 200, speed: 0.008, url: "https://en.wikipedia.org/wiki/Mars" },
+      { name: "Jupiter", color: "orange", radius: 15, orbitRadius: 300, speed: 0.006, url: "https://en.wikipedia.org/wiki/Jupiter" },
+      { name: "Saturn", color: "gold", radius: 12, orbitRadius: 400, speed: 0.004, url: "https://en.wikipedia.org/wiki/Saturn" },
+      { name: "Uranus", color: "lightblue", radius: 10, orbitRadius: 500, speed: 0.003, url: "https://en.wikipedia.org/wiki/Uranus" },
+      { name: "Neptune", color: "blue", radius: 10, orbitRadius: 600, speed: 0.002, url: "https://en.wikipedia.org/wiki/Neptune" }
+    ];
+
+    let time = 0;
+
+    function drawOrbit(radius) {
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+      ctx.stroke();
+    }
+
+    function drawPlanet(planet) {
+      const x = centerX + Math.cos(time * planet.speed) * planet.orbitRadius;
+      const y = centerY + Math.sin(time * planet.speed) * planet.orbitRadius;
+
+      ctx.beginPath();
+      ctx.arc(x, y, planet.radius, 0, Math.PI * 2);
+      ctx.fillStyle = planet.color;
+      ctx.fill();
+
+      return { x, y, radius: planet.radius, url: planet.url };
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the sun
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
+      ctx.fillStyle = "yellow";
+      ctx.fill();
+
+      const clickablePlanets = [];
+
+      planets.forEach(planet => {
+        drawOrbit(planet.orbitRadius);
+        const planetInfo = drawPlanet(planet);
+        clickablePlanets.push(planetInfo);
+      });
+
+      time += 1;
+      requestAnimationFrame(animate);
+
+      canvas.onclick = function (event) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        clickablePlanets.forEach(planet => {
+          const dx = mouseX - planet.x;
+          const dy = mouseY - planet.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance <= planet.radius) {
+            window.open(planet.url, "_blank");
+          }
+        });
+      };
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
