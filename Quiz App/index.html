@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1e1e2f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #4fc3f7;
+        }
+
+        .question {
+            margin: 20px 0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4fc3f7;
+            color: #121212;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0288d1;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz App</h1>
+        <div id="quiz">
+            <p class="question" id="question">Loading question...</p>
+            <div class="options" id="options"></div>
+        </div>
+        <p id="timer">Time left: <span id="time">10</span>s</p>
+        <button id="restart" class="hidden">Restart</button>
+        <button id="exit" class="hidden">Exit</button>
+    </div>
+
+    <script>
+        const API_URL = "https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple";
+        const quizContainer = document.getElementById('quiz');
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const timerElement = document.getElementById('time');
+        const restartButton = document.getElementById('restart');
+        const exitButton = document.getElementById('exit');
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval;
+        let timeLeft = 10;
+
+        async function fetchQuestions() {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            questions = data.results;
+            displayQuestion();
+        }
+
+        function shuffleOptions(correct, incorrect) {
+            const options = [...incorrect, correct];
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function startTimer() {
+            timeLeft = 10;
+            timerElement.textContent = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timerInterval);
+                    showCorrectAnswer();
+                }
+            }, 1000);
+        }
+
+        function displayQuestion() {
+            clearInterval(timerInterval);
+            const questionData = questions[currentQuestionIndex];
+            const shuffledOptions = shuffleOptions(questionData.correct_answer, questionData.incorrect_answers);
+
+            questionElement.textContent = questionData.question;
+            optionsElement.innerHTML = '';
+
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option, questionData.correct_answer);
+                optionsElement.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function checkAnswer(selected, correct) {
+            clearInterval(timerInterval);
+            if (selected === correct) {
+                score++;
+            }
+            showCorrectAnswer();
+        }
+
+        function showCorrectAnswer() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            questionElement.textContent = `Quiz Over! Your score: ${score}/${questions.length}`;
+            optionsElement.innerHTML = '';
+            timerElement.parentElement.classList.add('hidden');
+            restartButton.classList.remove('hidden');
+            exitButton.classList.remove('hidden');
+        }
+
+        restartButton.onclick = () => {
+            currentQuestionIndex = 0;
+            score = 0;
+            restartButton.classList.add('hidden');
+            exitButton.classList.add('hidden');
+            timerElement.parentElement.classList.remove('hidden');
+            fetchQuestions();
+        };
+
+        exitButton.onclick = () => {
+            alert("Thank you for playing!");
+            window.close();
+        };
+
+        fetchQuestions();
+    </script>
+</body>
+</html>
