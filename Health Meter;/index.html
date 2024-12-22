@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stay Healthy App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0d1b2a;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app-container {
+      background: linear-gradient(145deg, #112240, #0b1623);
+      border-radius: 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      width: 390px;
+      height: 844px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #1e293b;
+    }
+
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .input-section {
+      width: 100%;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .input-section input {
+      width: 80%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #3b506d;
+      background-color: #112240;
+      color: #ffffff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .input-section button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .input-section button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .result-section {
+      margin-top: 30px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .result-section p {
+      background-color: #1e293b;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">Stay Healthy App</div>
+
+    <div class="input-section">
+      <input type="number" id="temperature" placeholder="Enter today's temperature (°C)" />
+      <button onclick="getHealthTips()">Get Health Tips</button>
+    </div>
+
+    <div class="result-section" id="result">
+      <!-- Health tips will appear here -->
+    </div>
+
+    <footer>
+      Stay safe and healthy! 🌱
+    </footer>
+  </div>
+
+  <script>
+    function getHealthTips() {
+      const temperature = document.getElementById('temperature').value;
+      const resultSection = document.getElementById('result');
+
+      if (!temperature) {
+        resultSection.innerHTML = '<p>Please enter a valid temperature.</p>';
+        return;
+      }
+
+      let tips;
+      if (temperature >= 35) {
+        tips = "It's hot outside! Stay hydrated, wear light clothing, and avoid going out during peak sunlight hours.";
+      } else if (temperature >= 25) {
+        tips = "The weather is warm. Drink plenty of water and enjoy light, healthy meals.";
+      } else if (temperature >= 15) {
+        tips = "The weather is mild. It's a great time for outdoor activities, but carry a light jacket just in case.";
+      } else if (temperature >= 5) {
+        tips = "It's getting chilly. Wear warm clothing and consider drinking hot beverages to stay comfortable.";
+      } else {
+        tips = "It's very cold! Bundle up in warm layers, stay indoors if possible, and ensure proper heating at home.";
+      }
+
+      resultSection.innerHTML = `<p>${tips}</p>`;
+    }
+  </script>
+</body>
+</html>
