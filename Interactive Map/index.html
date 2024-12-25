@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        .filter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .filter label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .filter select {
+            width: 100%;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="filter">
+        <label for="category-filter">Filter by Category:</label>
+        <select id="category-filter">
+            <option value="all">All</option>
+            <option value="restaurant">Restaurants</option>
+            <option value="park">Parks</option>
+        </select>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([40.7128, -74.0060], 12); // New York City coordinates
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Marker data
+        const markersData = [
+            { lat: 40.73061, lng: -73.935242, category: 'restaurant', name: 'Joe's Pizza' },
+            { lat: 40.741895, lng: -73.989308, category: 'park', name: 'Madison Square Park' },
+            { lat: 40.712776, lng: -74.005974, category: 'restaurant', name: 'Shake Shack' },
+            { lat: 40.715337, lng: -73.960761, category: 'park', name: 'McCarren Park' }
+        ];
+
+        let markerLayer = L.layerGroup().addTo(map);
+
+        function addMarkers(category) {
+            markerLayer.clearLayers();
+            markersData.forEach(marker => {
+                if (category === 'all' || marker.category === category) {
+                    const leafletMarker = L.marker([marker.lat, marker.lng])
+                        .bindPopup(`<strong>${marker.name}</strong><br>${marker.category}`)
+                        .addTo(markerLayer);
+                }
+            });
+        }
+
+        // Add markers initially
+        addMarkers('all');
+
+        // Filter logic
+        const categoryFilter = document.getElementById('category-filter');
+        categoryFilter.addEventListener('change', () => {
+            const selectedCategory = categoryFilter.value;
+            addMarkers(selectedCategory);
+        });
+    </script>
+</body>
+</html>
