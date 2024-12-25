@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Animation Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+        }
+
+        .playground {
+            width: 80%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .controls label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .controls input, .controls select, .controls textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .preview {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .animated-box {
+            width: 100px;
+            height: 100px;
+            background: #ff5722;
+            margin: 0 auto;
+        }
+
+        .export {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .export textarea {
+            width: 100%;
+            height: 100px;
+            font-family: monospace;
+        }
+
+        button {
+            background: #2575fc;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #6a11cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="playground">
+        <h1>CSS Animation Playground</h1>
+        <div class="controls">
+            <div>
+                <label for="animation-name">Animation Name</label>
+                <input type="text" id="animation-name" placeholder="Enter animation name" value="myAnimation">
+            </div>
+            <div>
+                <label for="duration">Duration (seconds)</label>
+                <input type="number" id="duration" min="0.1" step="0.1" value="1">
+            </div>
+            <div>
+                <label for="easing">Easing</label>
+                <select id="easing">
+                    <option value="linear">Linear</option>
+                    <option value="ease">Ease</option>
+                    <option value="ease-in">Ease-In</option>
+                    <option value="ease-out">Ease-Out</option>
+                    <option value="ease-in-out">Ease-In-Out</option>
+                </select>
+            </div>
+            <div>
+                <label for="keyframes">Keyframes</label>
+                <textarea id="keyframes" placeholder="Enter keyframes, e.g., 0% { transform: scale(1); }\n100% { transform: scale(1.5); }">
+0% { transform: scale(1); }
+100% { transform: scale(1.5); }
+                </textarea>
+            </div>
+        </div>
+
+        <div class="preview">
+            <h2>Live Preview</h2>
+            <div class="animated-box" id="animated-box"></div>
+        </div>
+
+        <div class="export">
+            <button id="apply-animation">Apply Animation</button>
+            <h3>Export CSS Code</h3>
+            <textarea id="export-css" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const animationNameInput = document.getElementById('animation-name');
+        const durationInput = document.getElementById('duration');
+        const easingInput = document.getElementById('easing');
+        const keyframesInput = document.getElementById('keyframes');
+        const animatedBox = document.getElementById('animated-box');
+        const applyButton = document.getElementById('apply-animation');
+        const exportCSS = document.getElementById('export-css');
+
+        function applyAnimation() {
+            const animationName = animationNameInput.value;
+            const duration = durationInput.value;
+            const easing = easingInput.value;
+            const keyframes = keyframesInput.value;
+
+            // Create style element for keyframes
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes ${animationName} {
+                    ${keyframes}
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Apply animation to the box
+            animatedBox.style.animation = `${animationName} ${duration}s ${easing}`;
+
+            // Export CSS code
+            exportCSS.value = `@keyframes ${animationName} {
+${keyframes}
+}
+
+.animated-box {
+    animation: ${animationName} ${duration}s ${easing};
+}`;
+        }
+
+        applyButton.addEventListener('click', applyAnimation);
+    </script>
+</body>
+</html>
