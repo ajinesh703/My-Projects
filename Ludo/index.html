@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ludo Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .home {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    .red-home {
+      background-color: #e74c3c;
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .green-home {
+      background-color: #2ecc71;
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .yellow-home {
+      background-color: #f1c40f;
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .blue-home {
+      background-color: #3498db;
+      grid-column: 3;
+      grid-row: 3;
+    }
+
+    .path {
+      grid-column: 2;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: repeat(3, 30px);
+      grid-template-rows: repeat(3, 30px);
+      gap: 5px;
+    }
+
+    .cell {
+      background-color: #bdc3c7;
+      border-radius: 5px;
+    }
+
+    .controls {
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #dice-result {
+      margin-top: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="board">
+      <!-- Players' Home Areas -->
+      <div class="home red-home">Red Home</div>
+      <div class="home green-home">Green Home</div>
+      <div class="home yellow-home">Yellow Home</div>
+      <div class="home blue-home">Blue Home</div>
+
+      <!-- Game Path -->
+      <div class="path">
+        <div class="cell" id="cell-1"></div>
+        <div class="cell" id="cell-2"></div>
+        <div class="cell" id="cell-3"></div>
+        <!-- Add more cells to form the Ludo board -->
+      </div>
+    </div>
+
+    <!-- Dice & Game Info -->
+    <div class="controls">
+      <div id="game-info">Player 1 (Red), it's your turn!</div>
+      <button id="roll-dice">Roll Dice</button>
+      <div id="dice-result">🎲</div>
+    </div>
+  </div>
+
+  <script>
+    const players = ["Red", "Green", "Yellow", "Blue"];
+    let currentPlayer = 0; // Start with Player 1 (Red)
+
+    // Get DOM elements
+    const gameInfo = document.getElementById("game-info");
+    const diceResult = document.getElementById("dice-result");
+    const rollDiceBtn = document.getElementById("roll-dice");
+
+    // Function to roll the dice
+    function rollDice() {
+      const diceValue = Math.floor(Math.random() * 6) + 1; // Random number between 1 and 6
+      diceResult.textContent = `🎲 ${diceValue}`;
+
+      movePlayer(diceValue);
+      switchPlayer();
+    }
+
+    // Function to switch to the next player
+    function switchPlayer() {
+      currentPlayer = (currentPlayer + 1) % players.length; // Cycle through players
+      gameInfo.textContent = `Player ${currentPlayer + 1} (${players[currentPlayer]}), it's your turn!`;
+    }
+
+    // Function to move the player's piece (simplified)
+    function movePlayer(diceValue) {
+      alert(
+        `${players[currentPlayer]} player rolled ${diceValue} and moves ${diceValue} steps!`
+      );
+    }
+
+    // Add event listener to the "Roll Dice" button
+    rollDiceBtn.addEventListener("click", rollDice);
+  </script>
+</body>
+</html>
