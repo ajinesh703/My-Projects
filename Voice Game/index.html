@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shouting Football Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to bottom, #87CEEB, #228B22);
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      border: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Ball properties
+    const ball = {
+      x: canvas.width / 2,
+      y: canvas.height - 100,
+      radius: 30,
+      color: "white",
+      dy: 0, // Velocity
+      gravity: 0.5, // Gravity
+      lift: -15, // Lift when shouting
+    };
+
+    // Load football image
+    const ballImage = new Image();
+    ballImage.src = "football.png";
+
+    // Draw ball
+    function drawBall() {
+      ctx.beginPath();
+      ctx.drawImage(
+        ballImage,
+        ball.x - ball.radius,
+        ball.y - ball.radius,
+        ball.radius * 2,
+        ball.radius * 2
+      );
+      ctx.closePath();
+    }
+
+    // Update ball position
+    function updateBall() {
+      ball.dy += ball.gravity; // Gravity effect
+      ball.y += ball.dy;
+
+      // Prevent the ball from going off the screen
+      if (ball.y + ball.radius > canvas.height) {
+        ball.y = canvas.height - ball.radius;
+        ball.dy = 0;
+      }
+      if (ball.y - ball.radius < 0) {
+        ball.y = ball.radius;
+        ball.dy = 0;
+      }
+    }
+
+    // Game loop
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw and update ball
+      drawBall();
+      updateBall();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Start game loop
+    gameLoop();
+
+    // Web Speech API setup for shouting detection
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      console.log("Voice recognition started.");
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Error in voice recognition:", event.error);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[event.results.length - 1][0].transcript;
+      console.log("User said:", transcript);
+
+      // Detect shouting (based on loudness or long speech)
+      if (transcript.length > 3) {
+        ball.dy = ball.lift; // Make the ball go up
+      }
+    };
+
+    // Start listening for voice input
+    recognition.start();
+
+    // Resize canvas dynamically on window resize
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
