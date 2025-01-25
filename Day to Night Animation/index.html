@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day to Night Animation</title>
+  <style>
+    @keyframes day-to-night {
+      from {
+        background: #0C2233;
+      }
+      25% {
+        background: #88BEF5;
+      }
+      75% {
+        background: #0C2233;
+      }
+      to {
+        background: #0C2233;
+      }
+    }
+
+    @keyframes light-off {
+      from {
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      75% {
+        opacity: 0.3;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes hotspot-off {
+      from {
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      75% {
+        opacity: 0.3;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes cloud-move {
+      from {
+        left: -50px;
+        opacity: 0.4;
+      }
+      25% {
+        opacity: 0.8;
+      }
+      50% {
+        left: 270px;
+        opacity: 0.4;
+      }
+      to {
+        left: 270px;
+        opacity: 0.4;
+      }
+    }
+
+    @keyframes heavenly-body-move {
+      from {
+        top: 55px;
+        left: -60px;
+      }
+      15% {
+        top: 45px;
+      }
+      33% {
+        top: 30px;
+      }
+      40% {
+        top: 25px;
+      }
+      50% {
+        top: 20px;
+      }
+      60% {
+        top: 25px;
+      }
+      66% {
+        top: 30px;
+      }
+      85% {
+        top: 45px;
+      }
+      to {
+        top: 55px;
+        left: 270px;
+      }
+    }
+
+    @keyframes tree-shadow-move {
+      from {
+        background-image: linear-gradient(-45deg, #02947C 40%, #00A388 40%);
+      }
+      33% {
+        background-image: linear-gradient(-22deg, #02947C 40%, #00A388 40%);
+      }
+      50% {
+        background-image: linear-gradient(0deg, #02947C 40%, #00A388 40%);
+      }
+      66% {
+        background-image: linear-gradient(22deg, #02947C 40%, #00A388 40%);
+      }
+      to {
+        background-image: linear-gradient(45deg, #02947C 40%, #00A388 40%);
+      }
+    }
+
+    @keyframes stars-off {
+      from {
+        opacity: 0;
+      }
+      50% {
+        opacity: 0;
+      }
+      75% {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes change-background {
+      from {
+        background: #025982;
+      }
+      25% {
+        background: #0278AE;
+      }
+      50% {
+        background: #025982;
+      }
+      to {
+        background: #025982;
+      }
+    }
+
+    body {
+      background: #0278AE;
+      animation-name: change-background;
+      animation-duration: 8s;
+      animation-iteration-count: infinite;
+    }
+
+    .window-scene {
+      position: relative;
+      width: 300px;
+      height: 400px;
+      margin: 50px auto 0;
+    }
+
+    .window {
+      position: relative;
+      width: 300px;
+      height: 400px;
+      background: #fff;
+      z-index: 2;
+    }
+
+    .window:after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 13px;
+      width: 274px;
+      height: 360px;
+      background: #E4E4E4;
+      z-index: 0;
+    }
+
+    .window:before {
+      content: '';
+      position: absolute;
+      top: 380px;
+      left: 5px;
+      width: 290px;
+      height: 8px;
+      background: #E4E4E4;
+      z-index: 1;
+    }
+
+    .window-light {
+      position: absolute;
+      top: 11px;
+      width: 135px;
+      height: 395px;
+      z-index: 1;
+      animation-name: light-off;
+      animation-duration: 8s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+    }
+
+    .window-light-left {
+      left: -72px;
+      transform: rotate(20deg);
+      background-image: linear-gradient(
+        20deg,
+        rgba(255, 255, 255, 0) 10%,
+        rgba(255, 255, 255, 0.5)
+      );
+    }
+
+    .window-light-right {
+      left: 237px;
+      transform: rotate(-20deg);
+      background-image: linear-gradient(
+        -20deg,
+        rgba(255, 255, 255, 0) 10%,
+        rgba(255, 255, 255, 0.5)
+      );
+    }
+
+    .window-frame {
+      position: absolute;
+      top: 20px;
+      left: 145px;
+      width: 10px;
+      height: 360px;
+      background: #E4E4E4;
+      z-index: 3;
+    }
+
+    .window-frame:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 3px;
+      width: 4px;
+      height: 360px;
+      background: #fff;
+      z-index: 0;
+    }
+
+    .window-view {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      width: 260px;
+      height: 360px;
+      background: #88BEF5;
+      z-index: 1;
+      overflow: hidden;
+      animation-name: day-to-night;
+      animation-duration: 8s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+    }
+
+    .window-hotspot {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      z-index: 2;
+      width: 260px;
+      height: 360px;
+      background: transparent;
+      background-image: linear-gradient(
+        to right top,
+        transparent 60%,
+        rgba(255, 255, 255, 0.1) 60%,
+        rgba(255, 255, 255, 0.1) 70%,
+        transparent 70%,
+        transparent 73%,
+        rgba(255, 255, 255, 0.1) 73%,
+        rgba(255, 255, 255, 0.1) 76%,
+        transparent 76%
+      );
+      animation-name: hotspot-off;
+      animation-duration: 8s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+    }
+
+    .window-sill {
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 340px;
+      height: 40px;
+      background: #fff;
+    }
+
+    .heavenly-body {
+      position: absolute;
+      left: -60px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      animation-name: heavenly-body-move;
+      animation-duration: 4s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .sun {
+      background: #FFF82F;
+      box-shadow: 0 0 10px 2px #FFF82F;
+    }
+
+    .moon {
+      background: #fff;
+      box-shadow: 0 0 10px 2px #fff;
+    }
+
+    .cloud {
+      position: absolute;
+      left: -50px;
+      width: 25px;
+      height: 8px;
+      border-radius: 5px;
+      background: #f5f5f5;
+      animation-name: cloud-move;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .cloud:after {
+      content: '';
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      width: 25px;
+      height: 8px;
+      border-radius: 5px;
+      background: #f5f5f5;
+    }
+
+    .cloud-1 {
+      top: 35px;
+      animation-duration: 10s;
+    }
+
+    .cloud-2 {
+      top: 55px;
+      animation-duration: 8s;
+    }
+
+    .cloud-3 {
+      top: 95px;
+      animation-duration: 12s;
+    }
+
+    .cloud-4 {
+      top: 135px;
+      animation-duration: 14s;
+    }
+
+    .cloud-5 {
+      top: 165px;
+      animation-duration: 9s;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      opacity: 0;
+      animation-name: stars-off;
+      animation-duration: 8s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .star-1 {
+      top: 120px;
+      left: 25px;
+    }
+
+    .star-2 {
+      top: 105px;
+      left: 80px;
+    }
+
+    .star-3 {
+      top: 120px;
+      left: 150px;
+    }
+
+    .star-4 {
+      top: 110px;
+      left: 200px;
+    }
+
+    .star-5 {
+      top: 140px;
+      left: 250px;
+    }
+
+    .star-6 {
+      top: 160px;
+      left: 230px;
+    }
+
+    .star-7 {
+      top: 180px;
+      left: 70px;
+    }
+
+    .ground-light {
+      position: absolute;
+      top: 380px;
+      left: 5px;
+      width: 290px;
+      height: 8px;
+      background: #E4E4E4;
+      z-index: 1;
+      animation-name: tree-shadow-move;
+      animation-duration: 8s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+    }
+
+    .ground {
+      position: absolute;
+      bottom: 0;
+      left: 5px;
+      width: 290px;
+      height: 40px;
+      background: #02947C;
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 20px;
+      background: #02947C;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+
+    .tree-big {
+      left: 30px;
+      width: 50px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    .tree-small {
+      left: 100px;
+      width: 25px;
+      height: 30px;
+      border-radius: 50%;
+    }
+
+    .tree-small-1 {
+      bottom: 25px;
+    }
+
+    .tree-small-2 {
+      bottom: 30px;
+    }
+
+    .tree-long {
+      left: 200px;
+      width: 20px;
+      height: 70px;
+      border-radius: 20%;
+    }
+  </style>
+</head>
+<body>
+  <div class="window-scene">
+    <div class="window">
+      <div class="window-view">
+        <div class="heavenly-body"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+        <div class="cloud cloud-5"></div>
+        <div class="star star-1"></div>
+        <div class="star star-2"></div>
+        <div class="star star-3"></div>
+        <div class="star star-4"></div>
+        <div class="star star-5"></div>
+        <div class="star star-6"></div>
+        <div class="star star-7"></div>
+        <div class="ground-light"></div>
+        <div class="ground"></div>
+        <div class="tree tree-big"></div>
+        <div class="tree tree-small tree-small-1"></div>
+        <div class="tree tree-small tree-small-2"></div>
+        <div class="tree tree-long"></div>
+      </div>
+      <div class="window-hotspot"></div>
+      <div class="window-frame"></div>
+      <div class="window-sill"></div>
+    </div>
+    <div class="window-light window-light-left"></div>
+    <div class="window-light window-light-right"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function checkClass() {
+      if ($('.heavenly-body').hasClass('sun')) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    var heavenlyBody = $('.heavenly-body');
+    heavenlyBody.addClass('sun');
+
+    function sunToMoon() {
+      if (checkClass()) {
+        heavenlyBody.removeClass('sun');
+        heavenlyBody.addClass('moon');
+      } else {
+        heavenlyBody.removeClass('moon');
+        heavenlyBody.addClass('sun');
+      }
+    }
+
+    var timer = setTimeout(function tick() {
+      sunToMoon();
+      timer = setTimeout(tick, 4000); // Repeat every 4 seconds
+    }, 4000);
+  </script>
+</body>
+</html>
