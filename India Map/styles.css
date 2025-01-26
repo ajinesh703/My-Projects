@@ -1,0 +1,21 @@
+body {
+    background-color: aquamarine;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+#container {
+    height: 500px;
+    min-width: 310px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: brown;
+}
+
+.loading {
+    margin-top: 10em;
+    text-align: center;
+    color: gray;
+    font-size: 1.2em;
+    font-style: italic;
+}
