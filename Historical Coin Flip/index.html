@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Coin Flip</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #2c1810;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .coin {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            margin: 50px 0;
+        }
+
+        .coin div {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+            background: linear-gradient(45deg, #c99b50, #b8860b, #8b6914);
+            border: 4px solid #8b6914;
+            overflow: hidden;
+        }
+
+        .coin div::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255,255,255,0.1) 0%, 
+                    rgba(0,0,0,0.3) 100%),
+                url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="none" stroke="%238b6914" stroke-width="2" stroke-dasharray="3 3"/></svg>');
+        }
+
+        .coin div::after {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        .heads {
+            transform: rotateY(0deg);
+        }
+
+        .tails {
+            transform: rotateY(180deg);
+        }
+
+        .symbol {
+            width: 80%;
+            height: 80%;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .victoria-svg {
+            transform: scale(1.1) translateY(5%);
+        }
+
+        .tiger-svg {
+            transform: scale(0.9);
+        }
+
+        .flip {
+            animation: flip 2.5s ease-out forwards;
+        }
+
+        @keyframes flip {
+            0% {
+                transform: rotateY(0deg) scale(1) rotateZ(0deg);
+            }
+            30% {
+                transform: rotateY(1620deg) scale(1.2) rotateZ(15deg);
+            }
+            70% {
+                transform: rotateY(2340deg) scale(1.1) rotateZ(-10deg);
+            }
+            100% {
+                transform: rotateY(2520deg) scale(1) rotateZ(0deg);
+            }
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #6b4c32;
+            color: #e0c6ad;
+            border: 2px solid #8b6914;
+            border-radius: 30px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        button:hover {
+            background-color: #8b6914;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(139,105,20,0.5);
+        }
+
+        button:disabled {
+            background-color: #4a3727;
+            color: #987654;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #e0c6ad;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(43, 29, 16, 0.8);
+            border: 1px solid #8b6914;
+        }
+    </style>
+</head>
+<body>
+    <div class="coin" id="coin">
+        <div class="heads">
+            <svg class="symbol victoria-svg" viewBox="0 0 100 100">
+                <!-- Victoria Profile -->
+                <path fill="#38220b" d="M50 20 Q55 15 60 20 Q65 30 62 40 Q60 50 55 60 Q50 65 45 60 Q40 50 38 40 Q35 30 40 20 Q45 15 50 20 M45 25 Q43 30 45 35 Q50 40 55 35 Q57 30 55 25 Q53 20 50 18 Q47 20 45 25" />
+                <path fill="#38220b" d="M50 70 Q55 75 60 70 Q62 65 58 62 Q55 60 50 58 Q45 60 42 62 Q38 65 40 70 Q45 75 50 70" />
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#38220b" stroke-width="2" />
+            </svg>
+        </div>
+        <div class="tails">
+            <svg class="symbol tiger-svg" viewBox="0 0 100 100">
+                <!-- Tiger Face -->
+                <path fill="#38220b" d="M50 30 Q40 25 35 30 Q30 40 35 50 Q40 60 50 65 Q60 60 65 50 Q70 40 65 30 Q60 25 50 30 M40 40 Q45 35 50 35 Q55 35 60 40 Q58 45 55 48 Q50 50 45 48 Q42 45 40 40 M50 55 Q53 58 50 60 Q47 58 50 55" />
+                <path d="M30 40 Q25 45 30 50 Q35 55 40 50 M70 40 Q75 45 70 50 Q65 55 60 50" fill="#38220b" />
+                <path d="M45 60 Q50 65 55 60" fill="none" stroke="#38220b" stroke-width="2" />
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#38220b" stroke-width="2" />
+            </svg>
+        </div>
+    </div>
+    <button onclick="flipCoin()" id="flipButton">Flip Historical Coin</button>
+    <div id="result"></div>
+
+    <script>
+        function flipCoin() {
+            const coin = document.getElementById('coin');
+            const button = document.getElementById('flipButton');
+            const result = document.getElementById('result');
+            
+            button.disabled = true;
+            result.textContent = '';
+            
+            const random = Math.floor(Math.random() * 2);
+            coin.classList.add('flip');
+            
+            setTimeout(() => {
+                coin.classList.remove('flip');
+                result.textContent = random === 0 ? 'Queen Victoria!' : 'Royal Bengal Tiger!';
+                button.disabled = false;
+                
+                result.style.animation = 'none';
+                setTimeout(() => {
+                    result.style.animation = 'fadeScale 0.5s';
+                }, 10);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
