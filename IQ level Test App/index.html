@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQ & Mental Ability Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .question-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .iq-score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+
+        .category {
+            font-size: 1.5em;
+            color: #FFC107;
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen active" id="welcomeScreen">
+            <h1>IQ & Mental Ability Test</h1>
+            <p>Test your cognitive abilities with this comprehensive assessment</p>
+            <button class="start-btn" onclick="startTest()">Start Test</button>
+        </div>
+
+        <!-- Test Screen -->
+        <div class="screen" id="testScreen">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="question-box" id="questionBox"></div>
+            <div class="options-container" id="optionsContainer"></div>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="screen" id="resultScreen">
+            <div class="result-box">
+                <h2>Your IQ Score</h2>
+                <div class="iq-score" id="iqScore">...</div>
+                <div class="category" id="iqCategory"></div>
+                <p id="resultDescription"></p>
+                <button class="start-btn" onclick="location.reload()">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        const totalQuestions = 10;
+        const questions = [
+            {
+                question: "Which number comes next in the sequence: 2, 4, 8, 16, ...?",
+                options: ["24", "32", "64", "128"],
+                correct: 1
+            },
+            {
+                question: "If all Bloops are Razzies and all Razzies are Lazzies, then all Bloops are definitely Lazzies?",
+                options: ["True", "False"],
+                correct: 0
+            },
+            {
+                question: "Which shape doesn't belong? (◇ ○ ▭ △)",
+                options: ["◇", "○", "▭", "△"],
+                correct: 1
+            },
+            {
+                question: "Apple is to Fruit as Carrot is to:",
+                options: ["Root", "Vegetable", "Leaf", "Plant"],
+                correct: 3
+            },
+            {
+                question: "Solve: 3x + 5 = 20",
+                options: ["3", "4", "5", "6"],
+                correct: 2
+            },
+            {
+                question: "Which number is the odd one out? 12, 25, 37, 49, 82",
+                options: ["12", "25", "37", "49", "82"],
+                correct: 3
+            },
+            {
+                question: "John's age in 5 years will be double his age 5 years ago. How old is John now?",
+                options: ["10", "15", "20", "25"],
+                correct: 0
+            },
+            {
+                question: "Which letter comes next: A, C, E, G, ...?",
+                options: ["H", "I", "J", "K"],
+                correct: 1
+            },
+            {
+                question: "If ⬆️ becomes ⬇️ when rotated, what becomes when ⬅️ is rotated 90° clockwise?",
+                options: ["⬅️", "⬆️", "➡️", "⬇️"],
+                correct: 3
+            },
+            {
+                question: "Which word is different? Swift, Rapid, Slow, Speedy",
+                options: ["Swift", "Rapid", "Slow", "Speedy"],
+                correct: 2
+            }
+        ];
+
+        function startTest() {
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('testScreen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionBox').innerHTML = `
+                <h3>Question ${currentQuestion + 1}/${totalQuestions}</h3>
+                <p>${question.question}</p>
+            `;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.innerHTML = option;
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+
+            updateProgress();
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (selectedIndex === questions[currentQuestion].correct) {
+                score++;
+            }
+            
+            currentQuestion++;
+            
+            if (currentQuestion < totalQuestions) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+        }
+
+        function showResult() {
+            document.getElementById('testScreen').classList.remove('active');
+            document.getElementById('resultScreen').classList.add('active');
+            
+            const iqScore = Math.floor((score / totalQuestions) * 40 + 80 + Math.random() * 20);
+            const iqElement = document.getElementById('iqScore');
+            const categoryElement = document.getElementById('iqCategory');
+            
+            iqElement.textContent = iqScore;
+            
+            let category = '';
+            if (iqScore >= 130) category = "Genius";
+            else if (iqScore >= 120) category = "Superior Intelligence";
+            else if (iqScore >= 110) category = "Above Average";
+            else if (iqScore >= 90) category = "Average Intelligence";
+            else category = "Below Average";
+            
+            categoryElement.textContent = category;
+        }
+    </script>
+</body>
+</html>
