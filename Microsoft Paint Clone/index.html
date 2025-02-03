@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint Clone</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #0d9488;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            position: absolute;
+            background-color: #e5e7eb;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 800px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .title-bar {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 2px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            user-select: none;
+        }
+
+        .title-buttons {
+            display: flex;
+            gap: 2px;
+        }
+
+        .title-buttons button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .title-buttons button:hover {
+            background-color: #1e40af;
+        }
+
+        .menu-bar {
+            background-color: #d1d5db;
+            padding: 2px 8px;
+            font-size: 14px;
+            border-bottom: 1px solid #9ca3af;
+        }
+
+        .toolbar {
+            display: flex;
+        }
+
+        .tools-panel {
+            width: 32px;
+            background-color: #d1d5db;
+            padding: 2px;
+            border-right: 1px solid #9ca3af;
+        }
+
+        .tool-button {
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            margin-bottom: 2px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tool-button.active {
+            background-color: #d1d5db;
+            border: 1px solid #9ca3af;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .canvas-container {
+            flex-grow: 1;
+            border: 1px solid #9ca3af;
+            width: 724px;
+            height: 500px;
+            overflow: auto;
+        }
+
+        #canvas {
+            background-color: white;
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            background-color: #d1d5db;
+            padding: 4px;
+            border-top: 1px solid #9ca3af;
+        }
+
+        .color-button {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+        }
+
+        .color-button.active {
+            outline: 1px solid #374151;
+        }
+
+        .status-bar {
+            background-color: #d1d5db;
+            padding: 2px 8px;
+            font-size: 12px;
+            border-top: 1px solid #9ca3af;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="tooltip" id="tooltip"></div>
+    <div class="container" id="container">
+        <div class="title-bar" id="titleBar">
+            <span>untitled - Paint</span>
+            <div class="title-buttons">
+                <button>_</button>
+                <button>□</button>
+                <button>×</button>
+            </div>
+        </div>
+        <div class="menu-bar">
+            <span class="mr-4">File</span>
+            <span class="mr-4">Edit</span>
+            <span class="mr-4">View</span>
+            <span class="mr-4">Image</span>
+            <span class="mr-4">Options</span>
+            <span>Help</span>
+        </div>
+        <div class="toolbar">
+            <div class="tools-panel">
+                <button class="tool-button active" id="brushTool">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M18 12l-8-8-6 6c-2 2-2 5 0 7s5 2 7 0l7-7" />
+                        <path d="M17 7l3 3" />
+                    </svg>
+                </button>
+                <button class="tool-button" id="eraserTool">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 11L20 20Z" />
+                        <path d="M17 17L7 7" />
+                    </svg>
+                </button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas" width="2000" height="2000"></canvas>
+            </div>
+        </div>
+        <div class="color-palette" id="colorPalette"></div>
+        <div class="status-bar">
+            For Help, click Help Topics on the Help Menu.
+        </div>
+    </div>
+
+    <script>
+        const colors = [
+            '#000000', '#808080', '#800000', '#808000', '#008000', '#008080', 
+            '#000080', '#800080', '#808040', '#004040', '#0080FF', '#004080', 
+            '#8000FF', '#804000', '#FFFFFF', '#C0C0C0', '#FF0000', '#FFFF00', 
+            '#00FF00', '#00FFFF', '#0000FF', '#FF00FF', '#FFFF80', '#00FF80', 
+            '#80FFFF', '#8080FF', '#FF0080', '#FF8040'
+        ];
+
+        let isDrawing = false;
+        let currentColor = '#000000';
+        let currentTool = 'brush';
+        let isDragging = false;
+        let containerOffsetLeft = 0;
+        let containerOffsetTop = 0;
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('container');
+        const titleBar = document.getElementById('titleBar');
+        const colorPalette = document.getElementById('colorPalette');
+        const brushTool = document.getElementById('brushTool');
+        const eraserTool = document.getElementById('eraserTool');
+        const tooltip = document.getElementById('tooltip');
+
+        // Initialize canvas
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Create color buttons with tooltips
+        colors.forEach(color => {
+            const button = document.createElement('button');
+            button.className = 'color-button';
+            button.style.backgroundColor = color;
+            if (color === currentColor) button.classList.add('active');
+            
+            // Tooltip events
+            button.addEventListener('mouseenter', (e) => {
+                tooltip.style.display = 'block';
+                tooltip.textContent = color;
+                updateTooltipPosition(e);
+            });
+            
+            button.addEventListener('mousemove', updateTooltipPosition);
+            button.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.color-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentColor = color;
+            });
+            
+            colorPalette.appendChild(button);
+        });
+
+        // Tool selection with tooltips
+        function setupTool(toolElement, toolName) {
+            toolElement.addEventListener('mouseenter', (e) => {
+                tooltip.style.display = 'block';
+                tooltip.textContent = toolName;
+                updateTooltipPosition(e);
+            });
+            
+            toolElement.addEventListener('mousemove', updateTooltipPosition);
+            toolElement.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+        }
+
+        setupTool(brushTool, 'Brush');
+        setupTool(eraserTool, 'Eraser');
+
+        brushTool.addEventListener('click', () => {
+            brushTool.classList.add('active');
+            eraserTool.classList.remove('active');
+            currentTool = 'brush';
+        });
+
+        eraserTool.addEventListener('click', () => {
+            eraserTool.classList.add('active');
+            brushTool.classList.remove('active');
+            currentTool = 'eraser';
+        });
+
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            
+            // Set drawing properties
+            ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
+            ctx.strokeStyle = currentTool === 'eraser' ? 'rgba(0,0,0,1)' : currentColor;
+            ctx.lineWidth = currentTool === 'eraser' ? 20 : 2;
+            ctx.lineCap = 'round';
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Window dragging
+        titleBar.addEventListener('mousedown', startDragging);
+
+        function startDragging(e) {
+            isDragging = true;
+            const rect = container.getBoundingClientRect();
+            containerOffsetLeft = e.clientX - rect.left;
+            containerOffsetTop = e.clientY - rect.top;
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDragging);
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                container.style.left = `${e.clientX - containerOffsetLeft}px`;
+                container.style.top = `${e.clientY - containerOffsetTop}px`;
+            }
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDragging);
+        }
+
+        function updateTooltipPosition(e) {
+            tooltip.style.left = `${e.pageX + 10}px`;
+            tooltip.style.top = `${e.pageY + 10}px`;
+        }
+    </script>
+</body>
+</html>
