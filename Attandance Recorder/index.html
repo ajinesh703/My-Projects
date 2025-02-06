@@ -1,219 +1,258 @@
-$(document).ready(function () {
-    // typing animation
-    (function ($) {
-      $.fn.writeText = function (content) {
-        var contentArray = content.split(""),
-          current = 0,
-          elem = this;
-        setInterval(function () {
-          if (current < contentArray.length) {
-            elem.text(elem.text() + contentArray[current++]);
-          }
-        }, 80);
-      };
-    })(jQuery);
-  
-    // input text for typing animation
-    $("#holder").writeText("WEB DESIGNER + FRONT-END DEVELOPER");
-  
-    // initialize wow.js
-    new WOW().init();
-  
-    // Push the body and the nav over by 285px over
-    var main = function () {
-      $(".fa-bars").click(function () {
-        $(".nav-screen").animate(
-          {
-            right: "0px"
-          },
-          200
-        );
-  
-        $("body").animate(
-          {
-            right: "285px"
-          },
-          200
-        );
-      });
-  
-      // Then push them back */
-      $(".fa-times").click(function () {
-        $(".nav-screen").animate(
-          {
-            right: "-285px"
-          },
-          200
-        );
-  
-        $("body").animate(
-          {
-            right: "0px"
-          },
-          200
-        );
-      });
-  
-      $(".nav-links a").click(function () {
-        $(".nav-screen").animate(
-          {
-            right: "-285px"
-          },
-          500
-        );
-  
-        $("body").animate(
-          {
-            right: "0px"
-          },
-          500
-        );
-      });
-    };
-  
-    $(document).ready(main);
-  
-    // initiate full page scroll
-  
-    $("#fullpage").fullpage({
-      scrollBar: true,
-      responsiveWidth: 400,
-      navigation: true,
-      navigationTooltips: ["home", "about", "portfolio", "contact", "connect"],
-      anchors: ["home", "about", "portfolio", "contact", "connect"],
-      menu: "#myMenu",
-      fitToSection: false,
-  
-      afterLoad: function (anchorLink, index) {
-        var loadedSection = $(this);
-  
-        //using index
-        if (index == 1) {
-          /* add opacity to arrow */
-          $(".fa-chevron-down").each(function () {
-            $(this).css("opacity", "1");
-          });
-          $(".header-links a").each(function () {
-            $(this).css("color", "white");
-          });
-          $(".header-links").css("background-color", "transparent");
-        } else if (index != 1) {
-          $(".header-links a").each(function () {
-            $(this).css("color", "black");
-          });
-          $(".header-links").css("background-color", "white");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-  
-        //using index
-        if (index == 2) {
-          /* animate skill bars */
-          $(".skillbar").each(function () {
-            $(this)
-              .find(".skillbar-bar")
-              .animate(
-                {
-                  width: $(this).attr("data-percent")
-                },
-                2500
-              );
-          });
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-      }
-    });
-  
-    // move section down one
-    $(document).on("click", "#moveDown", function () {
-      $.fn.fullpage.moveSectionDown();
-    });
-  
-    // fullpage.js link navigation
-    $(document).on("click", "#skills", function () {
-      $.fn.fullpage.moveTo(2);
-    });
-  
-    $(document).on("click", "#projects", function () {
-      $.fn.fullpage.moveTo(3);
-    });
-  
-    $(document).on("click", "#contact", function () {
-      $.fn.fullpage.moveTo(4);
-    });
-  
-    // smooth scrolling
-    $(function () {
-      $("a[href*=#]:not([href=#])").click(function () {
-        if (
-          location.pathname.replace(/^\//, "") ==
-            this.pathname.replace(/^\//, "") &&
-          location.hostname == this.hostname
-        ) {
-          var target = $(this.hash);
-          target = target.length
-            ? target
-            : $("[name=" + this.hash.slice(1) + "]");
-          if (target.length) {
-            $("html,body").animate(
-              {
-                scrollTop: target.offset().top
-              },
-              700
-            );
-            return false;
-          }
+
+        .login-container, .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-      });
-    });
-  
-    //ajax form
-    $(function () {
-      // Get the form.
-      var form = $("#ajax-contact");
-  
-      // Get the messages div.
-      var formMessages = $("#form-messages");
-  
-      // Set up an event listener for the contact form.
-      $(form).submit(function (e) {
-        // Stop the browser from submitting the form.
-        e.preventDefault();
-  
-        // Serialize the form data.
-        var formData = $(form).serialize();
-  
-        // Submit the form using AJAX.
-        $.ajax({
-          type: "POST",
-          url: $(form).attr("action"),
-          data: formData
-        })
-          .done(function (response) {
-            // Make sure that the formMessages div has the 'success' class.
-            $(formMessages).removeClass("error");
-            $(formMessages).addClass("success");
-  
-            // Set the message text.
-            $(formMessages).text(response);
-  
-            // Clear the form.
-            $("#name").val("");
-            $("#email").val("");
-            $("#message").val("");
-          })
-          .fail(function (data) {
-            // Make sure that the formMessages div has the 'error' class.
-            $(formMessages).removeClass("success");
-            $(formMessages).addClass("error");
-  
-            // Set the message text.
-            if (data.responseText !== "") {
-              $(formMessages).text(data.responseText);
+
+        .login-container {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .student-list {
+            margin: 20px 0;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .attendance-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .attendance-record {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .checkbox {
+            margin-right: 15px;
+            transform: scale(1.3);
+        }
+
+        .date-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #currentDate {
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <h1>Welcome to Smart Attendance</h1>
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="login()">Unlock System</button>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-container hidden" id="appContainer">
+        <h1>📚 Class Attendance Manager</h1>
+        
+        <div class="attendance-controls">
+            <input type="text" id="className" placeholder="Enter Class Name">
+            <input type="text" id="studentName" placeholder="Add Student Name">
+            <button onclick="addStudent()">Add Student</button>
+        </div>
+
+        <div class="date-picker">
+            <span>Today's Date:</span>
+            <span id="currentDate"></span>
+        </div>
+
+        <div class="student-list" id="studentList"></div>
+
+        <button onclick="saveAttendance()">💾 Save Attendance</button>
+        <button onclick="showRecords()">📅 View Records</button>
+
+        <div class="attendance-record" id="attendanceRecords"></div>
+    </div>
+
+    <script>
+        // Password Protection
+        const PASSWORD = 'admin123';
+        let isLoggedIn = false;
+
+        function login() {
+            const password = document.getElementById('password').value;
+            if(password === PASSWORD) {
+                document.getElementById('loginContainer').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+                loadStudents();
+                updateDate();
             } else {
-              $(formMessages).text(
-                "Oops! An error occured and your message could not be sent."
-              );
+                alert('Incorrect Password!');
             }
-          });
-      });
-    });
-  });
-  
+        }
+
+        // Date Handling
+        function updateDate() {
+            const dateElement = document.getElementById('currentDate');
+            const today = new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dateElement.textContent = today;
+        }
+
+        // Student Management
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+
+        function addStudent() {
+            const studentName = document.getElementById('studentName').value;
+            const className = document.getElementById('className').value;
+            
+            if(studentName && className) {
+                students.push({ name: studentName, class: className, present: false });
+                document.getElementById('studentName').value = '';
+                saveStudents();
+                renderStudents();
+            }
+        }
+
+        function renderStudents() {
+            const studentList = document.getElementById('studentList');
+            studentList.innerHTML = students.map((student, index) => `
+                <div class="student-item">
+                    <input type="checkbox" class="checkbox" 
+                           ${student.present ? 'checked' : ''}
+                           onchange="toggleAttendance(${index})">
+                    <span>${student.name} (${student.class})</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleAttendance(index) {
+            students[index].present = !students[index].present;
+            saveStudents();
+        }
+
+        // Data Handling
+        function saveStudents() {
+            localStorage.setItem('students', JSON.stringify(students));
+        }
+
+        function saveAttendance() {
+            const className = document.getElementById('className').value;
+            const attendanceData = {
+                date: new Date().toISOString(),
+                className: className,
+                students: students.filter(student => student.class === className)
+            };
+            
+            let records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+            records.push(attendanceData);
+            localStorage.setItem('attendanceRecords', JSON.stringify(records));
+            alert('Attendance saved successfully!');
+            location.reload(); // Page refresh after saving
+        }
+
+        function showRecords() {
+            const records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+            const recordsHTML = records.map(record => `
+                <div class="record-item">
+                    <h3>${new Date(record.date).toLocaleDateString()} - ${record.className}</h3>
+                    <p>Students Present: ${record.students.filter(s => s.present).length}</p>
+                </div>
+            `).join('');
+            document.getElementById('attendanceRecords').innerHTML = recordsHTML;
+        }
+
+        function loadStudents() {
+            students = JSON.parse(localStorage.getItem('students')) || [];
+            renderStudents();
+        }
+
+        // Initialize Date
+        window.onload = updateDate;
+    </script>
+</body>
+</html>
