@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Eternal Love ❤️</title>
+    <style>
+        :root {
+            --heart-color: #ff2d75;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #ff1493, #ff69b4, #ff1493);
+            overflow: hidden;
+            font-family: 'Brush Script MT', cursive;
+            cursor: pointer;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 20, 147, 0.7);
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+        }
+
+        .beat-heart {
+            position: absolute;
+            font-size: 8em;
+            color: var(--heart-color);
+            text-shadow: 0 0 30px rgba(255, 45, 117, 0.7);
+            animation: heartbeat 1.2s infinite, glow 2s infinite;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--heart-color);
+            font-size: 4em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            transform: translateZ(50px);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .message {
+            font-size: 1.5em;
+            color: #6a2a35;
+            max-width: 600px;
+            margin: 1.5rem auto;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: messageIn 1.5s forwards 0.8s;
+        }
+
+        .heart-btn {
+            background: var(--heart-color);
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .heart-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s;
+        }
+
+        .heart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(255, 45, 117, 0.7);
+        }
+
+        .heart-btn:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 30px rgba(255, 45, 117, 0.7); }
+            50% { text-shadow: 0 0 50px rgba(255, 45, 117, 1); }
+        }
+
+        @keyframes messageIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateZ(-2deg);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes particle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: explode 0.8s forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(20); opacity: 0; }
+        }
+
+        .twinkle {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        #loveText {
+            position: fixed;
+            font-size: 2em;
+            color: white;
+            pointer-events: none;
+            animation: textFloat 2s forwards;
+        }
+
+        @keyframes textFloat {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles-container"></div>
+    <div class="beat-heart">❤️</div>
+    
+    <div class="container">
+        <h1>My Forever Valentine 💖</h1>
+        <p class="message">
+            In your eyes, I found my home.<br>
+            In your heart, I found my love.<br>
+            With your hand, I found my forever.<br>
+            You're my everything, today and always.
+        </p>
+        <button class="heart-btn" onclick="createFirework()">Touch My Heart 💘</button>
+    </div>
+
+    <script>
+        // Floating particles
+        function createParticle() {
+            const types = ['❤️', '💖', '✨', '🌸', '⭐'];
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.innerHTML = types[Math.floor(Math.random() * types.length)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = Math.random() * 3 + 4 + 's';
+            particle.style.fontSize = Math.random() * 20 + 10 + 'px';
+            particle.style.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            document.getElementById('particles-container').appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 6000);
+        }
+
+        // Create particles continuously
+        setInterval(createParticle, 100);
+
+        // Firework effect
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = Math.random() * 90 + 'vw';
+            firework.style.top = Math.random() * 90 + 'vh';
+            firework.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            document.body.appendChild(firework);
+            
+            setTimeout(() => firework.remove(), 800);
+
+            // Add floating text
+            const texts = ['I Love You!', 'Forever Yours', 'You Complete Me', 'My Soulmate'];
+            const loveText = document.createElement('div');
+            loveText.id = 'loveText';
+            loveText.textContent = texts[Math.floor(Math.random() * texts.length)];
+            loveText.style.left = firework.style.left;
+            loveText.style.top = firework.style.top;
+            loveText.style.color = firework.style.background;
+            document.body.appendChild(loveText);
+            
+            setTimeout(() => loveText.remove(), 2000);
+        }
+
+        // Twinkle stars
+        for(let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'twinkle';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(star);
+        }
+
+        // Parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.querySelector('.container').style.transform = `
+                rotateX(${(y - 0.5) * 10}deg)
+                rotateY(${(x - 0.5) * 10}deg)
+                translateZ(50px)
+            `;
+            
+            document.querySelector('.beat-heart').style.transform = `
+                translate(${(x - 0.5) * 30}px, ${(y - 0.5) * 30}px)
+            `;
+        });
+
+        // Background gradient animation
+        let angle = 0;
+        setInterval(() => {
+            angle = (angle + 0.5) % 360;
+            document.body.style.background = `
+                linear-gradient(${angle}deg, #ff1493, #ff69b4, #ff1493)
+            `;
+        }, 50);
+
+        // Initial confetti burst
+        window.onload = () => {
+            for(let i = 0; i < 100; i++) {
+                setTimeout(() => createParticle(), i * 10);
+            }
+        };
+
+        // Click anywhere to create hearts
+        document.addEventListener('click', (e) => {
+            if(!e.target.classList.contains('heart-btn')) {
+                for(let i = 0; i < 5; i++) {
+                    createParticle();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
