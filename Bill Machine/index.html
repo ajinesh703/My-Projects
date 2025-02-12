@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Billing System</title>
+    <style>
+        *{box-sizing:border-box;font-family:Arial,sans-serif}body{background:#f0f0f0;margin:20px}.container{max-width:800px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 0 10px #0000001a}.input-section{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px}.input-group{display:flex;flex-direction:column}input,select,button{padding:8px;margin-top:5px;border:1px solid #ddd;border-radius:4px}button{background:#4CAF50;color:#fff;border:none;cursor:pointer;padding:10px}button:hover{background:#45a049}.bill-section{margin-top:20px;border-top:2px solid #ccc;padding-top:20px}.bill-item{display:flex;justify-content:space-between;margin-bottom:10px;padding:10px;background:#f9f9f9}.total-section{text-align:right;font-size:1.2em;margin-top:20px}.print-btn{background:#008CBA}@media print{.no-print{display:none}.bill-section{border:none}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Hotel Billing System</h2>
+        
+        <div class="input-section no-print">
+            <div class="input-group">
+                <label>Guest Name:</label>
+                <input type="text" id="guestName" required>
+            </div>
+            <div class="input-group">
+                <label>Contact:</label>
+                <input type="tel" id="contact" required>
+            </div>
+            <div class="input-group">
+                <label>Check-in:</label>
+                <input type="date" id="checkin" required>
+            </div>
+            <div class="input-group">
+                <label>Check-out:</label>
+                <input type="date" id="checkout" required>
+            </div>
+            <div class="input-group">
+                <label>Room Type:</label>
+                <select id="roomType">
+                    <option value="standard">Standard</option>
+                    <option value="deluxe">Deluxe</option>
+                    <option value="suite">Suite</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Room Price/Night (Rs):</label>
+                <input type="number" id="roomPrice" value="2000">
+            </div>
+            <div class="input-group">
+                <label>Services:</label>
+                <input type="number" id="breakfast" placeholder="Breakfast (Rs)">
+                <input type="number" id="laundry" placeholder="Laundry (Rs)">
+                <input type="number" id="airport" placeholder="Airport Pickup (Rs)">
+            </div>
+        </div>
+
+        <button class="no-print" onclick="generateBill()">Generate Bill</button>
+        <button class="print-btn no-print" onclick="window.print()">Print Bill</button>
+
+        <div class="bill-section">
+            <h3>INVOICE</h3>
+            <div style="margin-bottom:20px">
+                <h4>Grand Hotel</h4>
+                <p>123 Hotel Street, Mumbai</p>
+                <p>Phone: 022-1234-5678</p>
+            </div>
+            
+            <div class="guest-info">
+                <p>Name: <span id="billName"></span></p>
+                <p>Contact: <span id="billContact"></span></p>
+                <p>Stay: <span id="nights"></span> nights</p>
+            </div>
+
+            <div class="bill-items" id="billItems"></div>
+
+            <div class="total-section">
+                <p>Total Amount: Rs<span id="total">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateNights() {
+            const checkin = new Date(document.getElementById('checkin').value);
+            const checkout = new Date(document.getElementById('checkout').value);
+            return Math.floor((checkout - checkin)/(1000*3600*24));
+        }
+
+        function generateBill() {
+            // Clear previous items
+            document.getElementById('billItems').innerHTML = '';
+            let totalAmount = 0;
+
+            // Get values
+            const nights = calculateNights();
+            const roomPrice = parseInt(document.getElementById('roomPrice').value) || 0;
+            const roomTotal = roomPrice * nights;
+            const breakfast = parseInt(document.getElementById('breakfast').value) || 0;
+            const laundry = parseInt(document.getElementById('laundry').value) || 0;
+            const airport = parseInt(document.getElementById('airport').value) || 0;
+
+            // Update guest info
+            document.getElementById('billName').textContent = 
+                document.getElementById('guestName').value;
+            document.getElementById('billContact').textContent = 
+                document.getElementById('contact').value;
+            document.getElementById('nights').textContent = nights;
+
+            // Add items to bill
+            function addBillItem(name, price) {
+                const div = document.createElement('div');
+                div.className = 'bill-item';
+                div.innerHTML = `<span>${name}</span><span>Rs${price.toFixed(2)}</span>`;
+                document.getElementById('billItems').appendChild(div);
+                totalAmount += price;
+            }
+
+            if(roomTotal > 0) addBillItem(`Room (${document.getElementById('roomType').value}) - ${nights} nights`, roomTotal);
+            if(breakfast > 0) addBillItem('Breakfast Service', breakfast);
+            if(laundry > 0) addBillItem('Laundry Service', laundry);
+            if(airport > 0) addBillItem('Airport Pickup', airport);
+
+            // Update total
+            document.getElementById('total').textContent = totalAmount.toFixed(2);
+        }
+    </script>
+</body>
+</html>
