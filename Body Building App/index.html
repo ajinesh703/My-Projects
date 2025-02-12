@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Body Building Workout App - Dark Mode with Exercise Images</title>
+  <!-- Google Font for a modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Basic Reset and Font Setup */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: #E0E0E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    /* Container Styling */
+    .container {
+      background: #1E1E1E;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      color: #fff;
+    }
+    /* Buttons for Duration Selection */
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .buttons button {
+      background: #6200EE;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+    .buttons button:hover {
+      background: #3700B3;
+    }
+    /* Curriculum Display Styles */
+    .curriculum {
+      margin-bottom: 20px;
+      border-top: 1px solid #333;
+      padding-top: 20px;
+    }
+    .curriculum h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    /* Exercise Item Styles */
+    .exercise {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #272727;
+    }
+    .exercise img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 20px;
+    }
+    .exercise p {
+      font-size: 1rem;
+      margin: 0;
+    }
+    /* Spotify Embed Styles */
+    .spotify {
+      text-align: center;
+    }
+    .spotify h2 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .spotify iframe {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Body Building Workout App</h1>
+    <!-- Duration Selection Buttons -->
+    <div class="buttons">
+      <button onclick="loadWorkout(20)">20 mins</button>
+      <button onclick="loadWorkout(30)">30 mins</button>
+      <button onclick="loadWorkout(45)">45 mins</button>
+      <button onclick="loadWorkout(60)">60 mins</button>
+    </div>
+    <!-- Workout Curriculum Display -->
+    <div class="curriculum" id="curriculum">
+      <h2>Select a duration to see your workout plan!</h2>
+    </div>
+    <!-- Embedded Spotify Playlist -->
+    <div class="spotify">
+      <h2>Workout Playlist</h2>
+      <!-- Replace the src with your desired Spotify playlist -->
+      <iframe
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX70RN3TfWWJh"
+        width="100%"
+        height="380"
+        frameborder="0"
+        allowtransparency="true"
+        allow="encrypted-media"
+      ></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Predefined workout plans with exercise images for each duration
+    const workouts = {
+      20: {
+        title: "20 Minute Workout",
+        exercises: [
+          { 
+            description: "Warm-up: Jumping Jacks (5 mins)", 
+            img: "https://via.placeholder.com/150?text=Jumping+Jacks" 
+          },
+          { 
+            description: "Circuit: Push-ups", 
+            img: "https://via.placeholder.com/150?text=Push-ups" 
+          },
+          { 
+            description: "Circuit: Squats", 
+            img: "https://via.placeholder.com/150?text=Squats" 
+          },
+          { 
+            description: "Circuit: Plank", 
+            img: "https://via.placeholder.com/150?text=Plank" 
+          },
+          { 
+            description: "Cool Down: Stretching (5 mins)", 
+            img: "https://via.placeholder.com/150?text=Stretching" 
+          }
+        ]
+      },
+      30: {
+        title: "30 Minute Workout",
+        exercises: [
+          { 
+            description: "Warm-up: Light Jogging (5 mins)", 
+            img: "https://via.placeholder.com/150?text=Light+Jogging" 
+          },
+          { 
+            description: "Strength: Dumbbell Exercises", 
+            img: "https://via.placeholder.com/150?text=Dumbbell+Exercises" 
+          },
+          { 
+            description: "Strength: Push-ups", 
+            img: "https://via.placeholder.com/150?text=Push-ups" 
+          },
+          { 
+            description: "Strength: Lunges", 
+            img: "https://via.placeholder.com/150?text=Lunges" 
+          },
+          { 
+            description: "Cool Down: Stretching & Breathing (10 mins)", 
+            img: "https://via.placeholder.com/150?text=Stretching+%26+Breathing" 
+          }
+        ]
+      },
+      45: {
+        title: "45 Minute Workout",
+        exercises: [
+          { 
+            description: "Warm-up: Dynamic Stretching (10 mins)", 
+            img: "https://via.placeholder.com/150?text=Dynamic+Stretching" 
+          },
+          { 
+            description: "Circuit: Dumbbell Squats (6 mins)", 
+            img: "https://via.placeholder.com/150?text=Dumbbell+Squats" 
+          },
+          { 
+            description: "Circuit: Dumbbell Rows (6 mins)", 
+            img: "https://via.placeholder.com/150?text=Dumbbell+Rows" 
+          },
+          { 
+            description: "Circuit: Push-ups (6 mins)", 
+            img: "https://via.placeholder.com/150?text=Push-ups" 
+          },
+          { 
+            description: "Circuit: Plank (7 mins)", 
+            img: "https://via.placeholder.com/150?text=Plank" 
+          },
+          { 
+            description: "Cool Down: Yoga and Stretching (10 mins)", 
+            img: "https://via.placeholder.com/150?text=Yoga+and+Stretching" 
+          }
+        ]
+      },
+      60: {
+        title: "60 Minute Workout",
+        exercises: [
+          { 
+            description: "Warm-up: Cardio & Mobility Drills (10 mins)", 
+            img: "https://via.placeholder.com/150?text=Cardio+and+Mobility+Drills" 
+          },
+          { 
+            description: "Strength: Compound Exercise - Deadlifts", 
+            img: "https://via.placeholder.com/150?text=Deadlifts" 
+          },
+          { 
+            description: "Strength: Compound Exercise - Bench Press", 
+            img: "https://via.placeholder.com/150?text=Bench+Press" 
+          },
+          { 
+            description: "HIIT: Burpees", 
+            img: "https://via.placeholder.com/150?text=Burpees" 
+          },
+          { 
+            description: "HIIT: Jump Squats", 
+            img: "https://via.placeholder.com/150?text=Jump+Squats" 
+          },
+          { 
+            description: "Cool Down: Deep Stretching & Relaxation (10 mins)", 
+            img: "https://via.placeholder.com/150?text=Deep+Stretching+%26+Relaxation" 
+          }
+        ]
+      }
+    };
+
+    // Function to load and display the workout plan based on the selected duration
+    function loadWorkout(duration) {
+      const curriculumDiv = document.getElementById('curriculum');
+      // Clear previous content
+      curriculumDiv.innerHTML = '';
+      // Retrieve the workout plan for the selected duration
+      const workout = workouts[duration];
+      if (!workout) {
+        curriculumDiv.innerHTML = '<p>No workout found for this duration.</p>';
+        return;
+      }
+      // Create and append the title for the workout plan
+      const title = document.createElement('h2');
+      title.textContent = workout.title;
+      curriculumDiv.appendChild(title);
+      
+      // Loop through each exercise and create a display block with image and description
+      workout.exercises.forEach(function (exercise) {
+        const exerciseDiv = document.createElement('div');
+        exerciseDiv.className = 'exercise';
+
+        const img = document.createElement('img');
+        img.src = exercise.img;
+        img.alt = exercise.description;
+
+        const desc = document.createElement('p');
+        desc.textContent = exercise.description;
+
+        exerciseDiv.appendChild(img);
+        exerciseDiv.appendChild(desc);
+        curriculumDiv.appendChild(exerciseDiv);
+      });
+    }
+  </script>
+</body>
+</html>
