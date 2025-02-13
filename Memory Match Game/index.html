@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2c3e50;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px;
+            max-width: 600px;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background: #3498db;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            color: white;
+        }
+
+        .card-front {
+            background: #2980b9;
+            transform: rotateY(180deg);
+        }
+
+        .card-back {
+            background: #3498db;
+        }
+
+        .stats {
+            color: white;
+            font-size: 1.2em;
+            margin: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #27ae60;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background: #219a52;
+        }
+    </style>
+</head>
+<body>
+    <div class="stats">Moves: <span id="moves">0</span></div>
+    <div class="game-container" id="game-container"></div>
+    <button onclick="startGame()">Restart Game</button>
+
+    <script>
+        const icons = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+        let cards = [];
+        let flippedCards = [];
+        let moves = 0;
+        let canFlip = true;
+
+        function createGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = '';
+            moves = 0;
+            document.getElementById('moves').textContent = moves;
+            
+            // Create pairs and shuffle
+            cards = [...icons, ...icons].sort(() => Math.random() - 0.5);
+            
+            cards.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-front">${icon}</div>
+                    <div class="card-back"></div>
+                `;
+                card.addEventListener('click', () => flipCard(card, index));
+                gameContainer.appendChild(card);
+            });
+        }
+
+        function flipCard(card, index) {
+            if (!canFlip || card.classList.contains('flip') || flippedCards.length === 2) return;
+
+            card.classList.add('flip');
+            flippedCards.push({ card, index });
+
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                
+                setTimeout(() => checkMatch(), 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            const match = cards[card1.index] === cards[card2.index];
+
+            if (!match) {
+                card1.card.classList.remove('flip');
+                card2.card.classList.remove('flip');
+            }
+
+            flippedCards = [];
+            canFlip = true;
+
+            if (document.querySelectorAll('.flip').length === cards.length) {
+                setTimeout(() => alert(`You won in ${moves} moves!`), 500);
+            }
+        }
+
+        function startGame() {
+            flippedCards = [];
+            canFlip = true;
+            createGame();
+        }
+
+        // Start the game when page loads
+        startGame();
+    </script>
+</body>
+</html>
