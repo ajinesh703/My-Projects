@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Memory Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            margin: 20px;
+            max-width: 800px;
+        }
+
+        #image-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px;
+            display: none;
+        }
+
+        .color-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        #test-container {
+            display: none;
+        }
+
+        .question {
+            margin: 20px;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        input {
+            padding: 5px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #666;
+        }
+
+        #timer {
+            font-size: 1.5em;
+            margin: 20px;
+        }
+
+        .correct { background: #4CAF50 !important; }
+        .incorrect { background: #f44336 !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visual Memory Test</h1>
+        <div id="timer">Time remaining: <span id="time">0</span>s</div>
+        <div id="image-container"></div>
+        <button id="start-btn" onclick="startTest()">Start Test</button>
+        
+        <div id="test-container">
+            <div class="question">
+                <h3>How many red boxes were there?</h3>
+                <input type="number" id="red-count">
+            </div>
+            <div class="question">
+                <h3>Which position had a blue box? (1-9)</h3>
+                <input type="number" id="blue-pos" min="1" max="9">
+            </div>
+            <div class="question">
+                <h3>Was there a green box in the center? (yes/no)</h3>
+                <input type="text" id="center-green">
+            </div>
+            <button onclick="checkAnswers()">Submit Answers</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let correctAnswers = {};
+        let currentPattern = [];
+
+        function generateRandomColor() {
+            const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function createImagePattern() {
+            const container = document.getElementById('image-container');
+            container.innerHTML = '';
+            currentPattern = [];
+            
+            for(let i = 0; i < 9; i++) {
+                const color = generateRandomColor();
+                currentPattern.push(color);
+                const box = document.createElement('div');
+                box.className = `color-box ${color}`;
+                box.style.backgroundColor = color;
+                container.appendChild(box);
+            }
+
+            // Set correct answers
+            correctAnswers = {
+                redCount: currentPattern.filter(c => c === 'red').length,
+                bluePosition: currentPattern.indexOf('blue') + 1,
+                centerGreen: currentPattern[4] === 'green'
+            };
+        }
+
+        function startTest() {
+            document.getElementById('start-btn').disabled = true;
+            createImagePattern();
+            
+            const imageContainer = document.getElementById('image-container');
+            const testContainer = document.getElementById('test-container');
+            let seconds = 5;
+            
+            imageContainer.style.display = 'grid';
+            document.getElementById('time').textContent = seconds;
+
+            const timer = setInterval(() => {
+                seconds--;
+                document.getElementById('time').textContent = seconds;
+                
+                if(seconds <= 0) {
+                    clearInterval(timer);
+                    imageContainer.style.display = 'none';
+                    testContainer.style.display = 'block';
+                    document.getElementById('start-btn').disabled = false;
+                }
+            }, 1000);
+        }
+
+        function checkAnswers() {
+            const userAnswers = {
+                redCount: parseInt(document.getElementById('red-count').value),
+                bluePosition: parseInt(document.getElementById('blue-pos').value),
+                centerGreen: document.getElementById('center-green').value.toLowerCase()
+            };
+
+            let score = 0;
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>Results:</h2>';
+
+            // Check red count
+            const redCountElem = document.getElementById('red-count');
+            if(userAnswers.redCount === correctAnswers.redCount) {
+                score++;
+                redCountElem.classList.add('correct');
+            } else {
+                redCountElem.classList.add('incorrect');
+            }
+
+            // Check blue position
+            const bluePosElem = document.getElementById('blue-pos');
+            if(userAnswers.bluePosition === correctAnswers.bluePosition) {
+                score++;
+                bluePosElem.classList.add('correct');
+            } else {
+                bluePosElem.classList.add('incorrect');
+            }
+
+            // Check center green
+            const centerGreenElem = document.getElementById('center-green');
+            const userCenterGreen = userAnswers.centerGreen === 'yes' ? true : 
+                                  userAnswers.centerGreen === 'no' ? false : null;
+            
+            if(userCenterGreen === correctAnswers.centerGreen) {
+                score++;
+                centerGreenElem.classList.add('correct');
+            } else {
+                centerGreenElem.classList.add('incorrect');
+            }
+
+            results.innerHTML += `
+                <p>Score: ${score}/3</p>
+                <p>Correct Answers:</p>
+                <ul>
+                    <li>Red boxes: ${correctAnswers.redCount}</li>
+                    <li>Blue position: ${correctAnswers.bluePosition}</li>
+                    <li>Green in center: ${correctAnswers.centerGreen ? 'Yes' : 'No'}</li>
+                </ul>
+            `;
+
+            // Add restart button
+            const restartBtn = document.createElement('button');
+            restartBtn.textContent = 'Try Again';
+            restartBtn.onclick = () => {
+                document.getElementById('test-container').style.display = 'none';
+                results.innerHTML = '';
+                document.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+            };
+            results.appendChild(restartBtn);
+        }
+    </script>
+</body>
+</html>
