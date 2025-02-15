@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Style Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .voice-options {
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: #45a049;
+        }
+
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Style Converter</h1>
+        <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+        
+        <div class="voice-options">
+            <button onclick="speak('male')">Male Voice</button>
+            <button onclick="speak('female')">Female Voice</button>
+            <button onclick="speak('drunk-male')">Drunk Male</button>
+            <button onclick="speak('drunk-female')">Drunk Female</button>
+        </div>
+
+        <div class="controls">
+            <button onclick="stopSpeaking()" style="background-color: #f44336;">Stop</button>
+        </div>
+    </div>
+
+    <script>
+        const synth = window.speechSynthesis;
+        let utterance = null;
+
+        function getVoice(gender) {
+            const voices = synth.getVoices();
+            return voices.find(voice => {
+                const voiceGender = voice.name.includes('Female') ? 'female' :
+                                  voice.name.includes('Male') ? 'male' : null;
+                return voiceGender === gender;
+            }) || voices[0];
+        }
+
+        function applyDrunkEffect(utterance) {
+            // Modify speech parameters for drunk effect
+            utterance.rate = 0.8; // Slower speed
+            utterance.pitch = 1.5; // Higher pitch
+            utterance.volume = 0.8; // Quieter volume
+        }
+
+        function speak(style) {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+
+            const text = document.getElementById('textInput').value;
+            if (!text) return;
+
+            utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set base voice characteristics
+            switch(style) {
+                case 'male':
+                    utterance.voice = getVoice('male');
+                    utterance.pitch = 1;
+                    utterance.rate = 1;
+                    break;
+                case 'female':
+                    utterance.voice = getVoice('female');
+                    utterance.pitch = 1.2;
+                    utterance.rate = 1.1;
+                    break;
+                case 'drunk-male':
+                    utterance.voice = getVoice('male');
+                    applyDrunkEffect(utterance);
+                    utterance.rate *= 0.7;
+                    break;
+                case 'drunk-female':
+                    utterance.voice = getVoice('female');
+                    applyDrunkEffect(utterance);
+                    utterance.pitch *= 1.2;
+                    break;
+            }
+
+            // Add slight randomization to simulate natural speech
+            utterance.pitch = Math.max(0.5, Math.min(2, utterance.pitch + Math.random() * 0.2 - 0.1));
+            utterance.rate = Math.max(0.7, Math.min(1.3, utterance.rate + Math.random() * 0.2 - 0.1));
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeaking() {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+        }
+
+        // Load voices when they become available
+        window.speechSynthesis.onvoiceschanged = function() {
+            const voices = synth.getVoices();
+            console.log('Voices loaded:', voices);
+        };
+    </script>
+</body>
+</html>
