@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Rope Bulb</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #111;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+    }
+    .container {
+      position: relative;
+      width: 150px;
+      height: 400px;
+    }
+    .bulb {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #444;
+      margin: 0 auto;
+      box-shadow: none;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .bulb.on {
+      background: #fdfd96;
+      box-shadow: 0 0 30px 10px #fdfd96, 0 0 60px 20px rgba(255, 255, 100, 0.4);
+    }
+    .rope {
+      width: 4px;
+      height: 150px;
+      background-color: #aaa;
+      margin: 0 auto;
+      transform-origin: top;
+      transition: height 0.3s;
+    }
+    .pull-handle {
+      width: 20px;
+      height: 20px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 10px auto 0;
+      cursor: grab;
+      transition: background 0.3s;
+    }
+    .pulling .pull-handle {
+      background: #eee;
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="bulbContainer">
+    <div class="bulb" id="bulb"></div>
+    <div class="rope" id="rope"></div>
+    <div class="pull-handle" id="handle"></div>
+  </div>
+
+  <script>
+    const rope = document.getElementById('rope');
+    const bulb = document.getElementById('bulb');
+    const handle = document.getElementById('handle');
+    const container = document.getElementById('bulbContainer');
+
+    let isPulling = false;
+    let startY = 0;
+    let maxPull = 100; // max additional rope length
+
+    function setPull(amount) {
+      rope.style.height = 150 + amount + 'px';
+    }
+
+    function lightBulb(on) {
+      if (on) {
+        bulb.classList.add('on');
+        container.classList.add('pulling');
+      } else {
+        bulb.classList.remove('on');
+        container.classList.remove('pulling');
+      }
+    }
+
+    handle.addEventListener('mousedown', (e) => {
+      isPulling = true;
+      startY = e.clientY;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isPulling) return;
+      let pullAmount = e.clientY - startY;
+      pullAmount = Math.min(Math.max(pullAmount, 0), maxPull);
+      setPull(pullAmount);
+      lightBulb(true);
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isPulling) {
+        isPulling = false;
+        setPull(0);
+        lightBulb(false);
+      }
+    });
+
+    // Touch support for mobile
+    handle.addEventListener('touchstart', (e) => {
+      isPulling = true;
+      startY = e.touches[0].clientY;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isPulling) return;
+      let pullAmount = e.touches[0].clientY - startY;
+      pullAmount = Math.min(Math.max(pullAmount, 0), maxPull);
+      setPull(pullAmount);
+      lightBulb(true);
+    });
+
+    document.addEventListener('touchend', () => {
+      if (isPulling) {
+        isPulling = false;
+        setPull(0);
+        lightBulb(false);
+      }
+    });
+  </script>
+</body>
+</html>
